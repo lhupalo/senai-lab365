@@ -9,11 +9,12 @@ import (
 )
 
 type NotificationDispatcher struct {
-	workerCount int
-	queue       chan *domain.Notification
-	ctx         context.Context
-	cancel      context.CancelFunc
-	wg          sync.WaitGroup
+	workerCount  int
+	queue        chan *domain.Notification
+	metricsChan  chan int
+	ctx          context.Context
+	cancel       context.CancelFunc
+	wg           sync.WaitGroup
 }
 
 func NewNotificationDispatcher(workerCount, bufferSize int) *NotificationDispatcher {
@@ -21,6 +22,7 @@ func NewNotificationDispatcher(workerCount, bufferSize int) *NotificationDispatc
 	d := &NotificationDispatcher{
 		workerCount: workerCount,
 		queue:       make(chan *domain.Notification, bufferSize),
+		metricsChan:  make(chan int),
 		ctx:         ctx,
 		cancel:      cancel,
 	}
@@ -51,9 +53,14 @@ func (d *NotificationDispatcher) worker(id int) {
 }
 
 func (d *NotificationDispatcher) dispatch(notification *domain.Notification, workerID int) {
+	go d.recordMetric(workerID)
 	time.Sleep(50 * time.Millisecond)
 	log.Printf("[worker-%d] dispatched: user=%s priority=%s msg=%s",
 		workerID, notification.UserID, notification.Priority, notification.Message)
+}
+
+func (d *NotificationDispatcher) recordMetric(workerID int) {
+	d.metricsChan <- workerID
 }
 
 func (d *NotificationDispatcher) Enqueue(notification *domain.Notification) error {
