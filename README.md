@@ -62,3 +62,7 @@ internal/
   infrastructure/ # NotificationDispatcher (WorkerPool)
   interfaces/     # Handlers HTTP e DTOs
 ```
+
+## PR Agent
+
+Review automático de PRs via [PR Agent](https://github.com/qodo-ai/pr-agent). Configure o secret `OPENAI_KEY` em Settings > Secrets and variables > Actions.
