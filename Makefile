@@ -7,7 +7,7 @@ build: swagger
 	go build -o bin/senai-lab365 ./cmd/api
 
 swagger:
-	swag init -g cmd/api/main.go -o docs --parseDependency --parseInternal
+	swag init -g cmd/api/main.go -o docs --parseDependency --parseInternal -q
 
 deps:
 	go mod download
