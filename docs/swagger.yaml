@@ -1,0 +1,44 @@
+basePath: /v1
+host: localhost:8000
+info:
+  contact: {}
+  description: API de Notificações Assíncronas
+  title: Notifications API
+  version: "1.0"
+paths:
+  /notifications:
+    post:
+      consumes:
+      - application/json
+      description: Enfileira uma notificação para envio assíncrono (email/SMS)
+      parameters:
+      - description: Dados da notificação
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Criar notificação
+      tags:
+      - notifications
+swagger: "2.0"
